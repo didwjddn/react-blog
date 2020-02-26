@@ -3,6 +3,8 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser =require('body-parser');
 const cookieParser =require('cookie-parser');
+const {auth} = require('./middleware/auth');
+
 
 const config = require('./config/key');
 
@@ -73,4 +75,36 @@ app.post("/api/users/login", (req, res) => {
 
 
 
-app.listen(5000);
+
+app.get('api/users/auth',auth,(req, res)=>{
+
+    //여기 까지 미들웨으를 통과해 왔다는 이야기는 authentication 이 true라는 말
+    res.status(200).json({
+        _id:req.user._id,
+        isAdmin: req.user.role ===0? false: true,
+        isAuth: true,
+        email:req.user.email,
+        name: req.user.name,
+        lastname: req.user.lastname,
+        role: req.user.role,
+        image: req.user.image
+    })
+})
+
+app.get("/api/users/logout", auth, (req, res) => {
+    User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, user) => {
+      if (err) return res.json({ success: false, err });
+      return res.status(200).send({
+        success: true
+      });
+    });
+  });
+
+
+app.get('/api/hello', (req,res)=>{
+  res.send("안녕하세요 ~")
+})  
+
+const port = 5000
+
+app.listen(port ,()=> console.log(`Example app listening on port ${port}`));
