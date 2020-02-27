@@ -1,3 +1,3 @@
 # react-blog
 
-basic react-blog page with MERN(MangoDB+ExpressJS+reactJS+nodeJS) 
+basic login, register page with MERN(MangoDB+ExpressJS+reactJS+nodeJS) 
